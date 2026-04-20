@@ -1,0 +1,19 @@
+persistentStorage:
+  nats:
+    pv:
+      create: false # Let EBS CSI create the PV for us
+      platform: kind
+      storageClass: standard
+      size: 1Gi
+
+mdai-operator:
+  controllerManager:
+    manager:
+      env:
+        otelSdkDisabled: "true"
+
+mdai-gateway:
+  otelSdkDisabled: "true"
+
+mdai-s3-logs-reader:
+  enabled: false
