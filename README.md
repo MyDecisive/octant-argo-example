@@ -6,8 +6,13 @@ This repo is an example of how to use and run Octant (by MyDecisive) in an Argo 
 
 ## Prereqs
 
-* Tilt [LINK]()
+* [Tilt](https://docs.tilt.dev/install.html)
 
+On Mac OS you can install Tilt with Homebrew:
+
+```bash
+brew install tilt
+```
 
 ## Deployment method
 
