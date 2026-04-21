@@ -22,6 +22,8 @@ If you need a cluster for sandbox-like testing, use [these instructions](#sandbo
 
 ## Sandbox setup
 
+Start Docker.
+
 > [WARN]
 > Use this repo for sandbox testing only.
 
