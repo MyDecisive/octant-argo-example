@@ -9,7 +9,7 @@ spec:
   project: default
   sources:
   - repoURL: https://github.com/MyDecisive/mdai-hub.git
-    targetRevision: ENG-1136
+    targetRevision: 0.9.3-envoy
     path: .
     helm:
       valueFiles:
