@@ -9,6 +9,7 @@ spec:
   project: default
   sources:
   - repoURL: oci://ghcr.io/mydecisive/charts/mdai-hub
+    chart: mdai-hub
     targetRevision: 0.9.3-envoy
   - repoURL: https://github.com/MyDecisive/octant-argo-example.git
     targetRevision: main
