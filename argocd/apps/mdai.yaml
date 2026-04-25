@@ -9,8 +9,7 @@ spec:
   project: default
   sources:
   - repoURL: https://github.com/MyDecisive/mdai-hub.git
-    targetRevision: 0.9.3-envoy
-    path: .
+    targetRevision: v0.9.3-envoy
     helm:
       valueFiles:
       - $values/argocd/mdai/chart/local-values.yaml
