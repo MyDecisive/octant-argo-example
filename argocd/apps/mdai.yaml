@@ -11,6 +11,9 @@ spec:
   - repoURL: oci://ghcr.io/mydecisive/charts/mdai-hub
     chart: mdai-hub
     targetRevision: 0.9.3-envoy
+    helm:
+      valueFiles:
+      - $values/argocd/mdai/chart/local-values.yaml
   - repoURL: https://github.com/MyDecisive/octant-argo-example.git
     targetRevision: main
     path: argocd/mdai/chart
