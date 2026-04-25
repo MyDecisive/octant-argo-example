@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   sources:
-  - repoURL: https://github.com/MyDecisive/mdai-hub.git
+  - repoURL: oci://ghcr.io/mydecisive/charts/mdai-hub
     targetRevision: v0.9.3-envoy
     helm:
       valueFiles:
