@@ -1,0 +1,79 @@
+datadog:
+  apiKeyExistingSecret: datadog-secret
+  clusterName: octant-sandbox
+  site: us5.datadoghq.com
+
+  # Your proxy/shim endpoints (unchanged)
+  dd_url: http://test-dd-collector.mdai.svc.cluster.local:8126
+
+  kubelet:
+    tlsVerify: false
+
+  tags:
+    - "cluster:octant-sandbox"
+    - "env:mdai"
+
+  logs:
+    enabled: true
+    # Must be true for include/exclude rules to apply to container logs
+    containerCollectAll: true
+
+  env:
+    - name: DD_LOGS_CONFIG_LOGS_DD_URL
+      value: "http://test-dd-collector.mdai.svc.cluster.local:8126"
+    # Send logs over HTTP when routing through a gateway / proxy / collector
+    - name: DD_LOGS_CONFIG_USE_HTTP
+      value: "true"
+    # Stronger setting to ensure the agent stays on HTTP(S) transport
+    - name: DD_LOGS_CONFIG_FORCE_USE_HTTP
+      value: "true"
+    # Recommended for high-volume log traffic
+    - name: DD_LOGS_CONFIG_USE_COMPRESSION
+      value: "true"
+
+    # ---- Global tags (kept) ----
+    - name: DD_TAGS
+      value: "cluster:mdai env:dev_dd_test"
+
+    # ---- Only INCLUDE logs from the synthetics namespace ----
+    # Use kube_namespace selector; space-separated patterns allowed.
+    # Inclusion takes precedence over exclusion for logs/metrics.
+    - name: DD_CONTAINER_INCLUDE_LOGS
+      value: "kube_namespace:^synthetics$"
+
+    # Optional: explicitly exclude everything else (include still wins)
+    - name: DD_CONTAINER_EXCLUDE_LOGS
+      value: "kube_namespace:.*"
+
+    - name: DD_APM_DD_URL
+      value: "http://test-dd-collector.mdai.svc.cluster.local:8126"
+
+    - name: DD_KUBERNETES_EXCLUDE_NAMESPACE
+      value: "kube-system|<app_namespace>|datadog"
+
+  apm:
+    # Enable this only if applications send traces to the agent over TCP:8126
+    # If applications use the default Datadog Unix socket instead, portEnabled is optional
+    portEnabled: true
+    port: 8126
+
+dogstatsd:
+  port: 8125
+  useHostPort: true
+  nonLocalTraffic: true
+
+apm_config:
+  enabled: true
+
+
+agents:
+  containers:
+    traceAgent:
+      env:
+        - name: DD_HOSTNAME
+          value: datadog-agent
+        - name: DD_SKIP_SSL_VALIDATION
+          value: "true"
+        # This only affects metrics/APM discovery, not log inclusion above.
+        - name: DD_KUBERNETES_EXCLUDE_NAMESPACE
+          value: "kube-system|mdai|datadog"

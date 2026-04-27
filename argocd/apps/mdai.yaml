@@ -15,7 +15,7 @@ spec:
       valueFiles:
       - $values/argocd/mdai/chart/local-values.yaml
   - repoURL: https://github.com/MyDecisive/octant-argo-example.git
-    targetRevision: main
+    targetRevision: feat/octant-app
     ref: values
   destination:
     name: "in-cluster"

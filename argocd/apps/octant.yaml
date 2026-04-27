@@ -8,13 +8,11 @@ metadata:
 spec:
   project: default
   sources:
-  - repoURL: oci://ghcr.io/mydecisive/charts/octant-ui
-    chart: octant-ui
-    targetRevision: 0.1.3
-    helm:
-      parameters:
-        - name: deployment.gateway_host
-          value: http://mdai-gateway.mdai.svc.cluster.local:8081
+  - repoURL: https://github.com/MyDecisive/octant-ui.git
+    targetRevision: feat/octant-app
+  - repoURL: ghcr.io/mydecisive/charts/octant
+    chart: octant
+    targetRevision: 0.1.0
   destination:
     name: "in-cluster"
     namespace: octant
