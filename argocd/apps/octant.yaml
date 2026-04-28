@@ -9,10 +9,15 @@ spec:
   project: default
   sources:
   - repoURL: https://github.com/MyDecisive/octant-ui.git
-    targetRevision: feat/octant-app
+    targetRevision: feat/api-foundation
   - repoURL: ghcr.io/mydecisive/charts/octant
     chart: octant
     targetRevision: 0.1.0
+  - repoURL: https://github.com/MyDecisive/octant-argo-example.git
+    targetRevision: feat/octant-app
+    ref: values
+  - repoURL: https://github.com/MyDecisive/octant-argo-example.git
+    targetRevision: main
   destination:
     name: "in-cluster"
     namespace: octant

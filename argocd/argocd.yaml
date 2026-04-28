@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/MyDecisive/octant-argo-example.git
-    targetRevision: main
+    targetRevision: feat/octant-app
     path: argocd/apps/
     directory:
       recurse: true
