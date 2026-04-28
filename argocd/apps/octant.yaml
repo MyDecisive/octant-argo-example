@@ -10,6 +10,10 @@ spec:
   sources:
   - repoURL: https://github.com/MyDecisive/octant-ui.git
     targetRevision: feat/api-foundation
+    helm:
+      parameters:
+        - name: deployment.gateway_host
+          value: http://mdai-gateway.mdai.svc.cluster.local:8081
   - repoURL: ghcr.io/mydecisive/charts/octant
     chart: octant
     targetRevision: 0.1.0
