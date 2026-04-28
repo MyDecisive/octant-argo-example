@@ -8,20 +8,18 @@ metadata:
 spec:
   project: default
   sources:
-  - repoURL: https://github.com/MyDecisive/octant-ui.git
-    targetRevision: feat/api-foundation
+  - repoURL: /ghcr.io/mydecisive/charts
+    chart: octant-ui
+    targetRevision: 0.1.4
     helm:
-      parameters:
-        - name: deployment.gateway_host
-          value: http://mdai-gateway.mdai.svc.cluster.local:8081
-  - repoURL: ghcr.io/mydecisive/charts/octant
+      valueFiles:
+        - $values/argocd/octant/values.yaml
+  - repoURL: ghcr.io/mydecisive/charts
     chart: octant
     targetRevision: 0.1.0
   - repoURL: https://github.com/MyDecisive/octant-argo-example.git
     targetRevision: feat/octant-app
     ref: values
-  - repoURL: https://github.com/MyDecisive/octant-argo-example.git
-    targetRevision: main
   destination:
     name: "in-cluster"
     namespace: octant
