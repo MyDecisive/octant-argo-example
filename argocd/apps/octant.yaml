@@ -8,18 +8,9 @@ metadata:
 spec:
   project: default
   sources:
-  - repoURL: /ghcr.io/mydecisive/charts
-    chart: octant-ui
-    targetRevision: 0.1.4
-    helm:
-      valueFiles:
-        - $values/argocd/octant/values.yaml
-  - repoURL: ghcr.io/mydecisive/charts
-    chart: octant
-    targetRevision: 0.1.0
-  - repoURL: https://github.com/MyDecisive/octant-argo-example.git
-    targetRevision: feat/octant-app
-    ref: values
+    - repoURL: ghcr.io/mydecisive/charts
+      chart: octant
+      targetRevision: 0.1.1
   destination:
     name: "in-cluster"
     namespace: octant
@@ -28,8 +19,8 @@ spec:
       enabled: true
       prune: true
     syncOptions:
-    - PruneLast=true
-    - CreateNamespace=true
-    - ServerSideApply=true
+      - PruneLast=true
+      - CreateNamespace=true
+      - ServerSideApply=true
     retry:
       limit: 2

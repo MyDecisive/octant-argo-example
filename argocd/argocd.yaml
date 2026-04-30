@@ -4,12 +4,12 @@ metadata:
   name: octant
   namespace: argocd
   finalizers:
-  - resources-finalizer.argocd.argoproj.io
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
     repoURL: https://github.com/MyDecisive/octant-argo-example.git
-    targetRevision: feat/octant-app
+    targetRevision: sp/octant-tests
     path: argocd/apps/
     directory:
       recurse: true
