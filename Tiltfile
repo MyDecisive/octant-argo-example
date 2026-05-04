@@ -11,10 +11,6 @@ helm_remote('argo-cd',
   version='9.1.5',
   namespace='argocd',
   create_namespace=True,
-  set=[
-        'fullnameOverride=argocd',
-        'configs.params.server\\.insecure=true'
-  ]
 )
 k8s_resource('argocd-server', port_forwards=1443)
 

@@ -7,7 +7,6 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
 data:
-  accounts.apiUser: apiKey
   resource.customizations.health.argoproj.io_Application: |
     hs = {}
     hs.status = "Progressing"

@@ -11,8 +11,6 @@ spec:
     repoURL: https://github.com/MyDecisive/octant-argo-example.git
     targetRevision: sp/octant-tests
     path: argocd/apps/
-    directory:
-      recurse: true
   destination:
     name: in-cluster
     namespace: argocd
