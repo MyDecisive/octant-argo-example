@@ -31,9 +31,8 @@ echo "🔑 Step 4: Logging into ArgoCD CLI (Bypassing Tilt via native port-forwa
 set +e
 # We replace the SERVER IP with the built-in port-forwarding flags.
 # The CLI connects to a random argocd-server port using its own tunnel.
-LOGIN_OUTPUT=$(argocd login "argocd-server" \
+LOGIN_OUTPUT=$(argocd login "argo-cd-argocd-server" \
   --port-forward --port-forward-namespace "$NAMESPACE" \
-  --plaintext \
   --username admin \
   --password "$ADMIN_PASSWORD" 2>&1)
 LOGIN_EXIT_CODE=$?
@@ -54,14 +53,13 @@ echo "🎫 Step 5: Generating API token for '$ACCOUNT' (expires in 90 days)..."
 API_TOKEN=$(argocd account generate-token \
   --account "$ACCOUNT" \
   --port-forward --port-forward-namespace "$NAMESPACE" \
-  --plaintext \
   --expires-in 2160h)
 
 echo ""
 echo "=================================================="
 echo "✅ Setup Complete!"
 echo "=================================================="
-echo "🌐 K8s Hostname:    http://argocd-server.$NAMESPACE.svc.cluster.local"
+echo "🌐 K8s Hostname:    https://argo-cd-argocd-server.$NAMESPACE.svc.cluster.local"
 echo "👤 Admin Password:  $ADMIN_PASSWORD"
 echo "🪙  API Token:      $API_TOKEN"
 echo "=================================================="
