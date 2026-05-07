@@ -11,17 +11,13 @@ helm_remote('argo-cd',
   version='9.1.5',
   namespace='argocd',
   create_namespace=True,
-  set=[
-        'fullnameOverride=argocd',
-        'configs.params.server\\.insecure=true'
-  ]
 )
-k8s_resource('argocd-server', port_forwards=1443)
+k8s_resource('argo-cd-argocd-server', port_forwards=1443)
 
 local_resource(
   'patch-argocd-cm',
   'kubectl patch cm/argocd-cm --type=merge -n argocd --patch-file argocd/argocd-cm.yaml',
   deps=['argocd/argocd-cm.yaml'],
-  resource_deps = ['argocd-server'])
+  resource_deps = ['argo-cd-argocd-server'])
 
 k8s_yaml("argocd/argocd.yaml")

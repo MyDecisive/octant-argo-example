@@ -8,13 +8,9 @@ metadata:
 spec:
   project: default
   sources:
-  - repoURL: oci://ghcr.io/mydecisive/charts/octant-ui
-    chart: octant-ui
-    targetRevision: 0.1.3
-    helm:
-      parameters:
-        - name: deployment.gateway_host
-          value: http://mdai-gateway.mdai.svc.cluster.local:8081
+    - repoURL: ghcr.io/mydecisive/charts
+      chart: octant
+      targetRevision: 0.1.11
   destination:
     name: "in-cluster"
     namespace: octant
@@ -23,8 +19,8 @@ spec:
       enabled: true
       prune: true
     syncOptions:
-    - PruneLast=true
-    - CreateNamespace=true
-    - ServerSideApply=true
+      - PruneLast=true
+      - CreateNamespace=true
+      - ServerSideApply=true
     retry:
       limit: 2
