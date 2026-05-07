@@ -29,6 +29,9 @@ prereqs:
 create-cluster:
     kind create cluster --name {{cluster}}
 
+delete-cluster:
+    kind delete cluster --name {{cluster}}
+
 # Add/update the Argo Helm repo
 helm-repos:
     helm repo add argo https://argoproj.github.io/argo-helm
@@ -60,7 +63,7 @@ deploy-octant:
 setup: create-cluster install-argocd wait-argocd patch-argocd-cm
 
 # Full bootstrap including Octant app deployment
-bootstrap: setup deploy-octant
+octant-bootstrap: setup deploy-octant
 
 # Port-forward Argo CD UI to https://localhost:1443
 port-forward-argocd:
