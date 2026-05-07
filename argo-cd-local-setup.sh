@@ -24,7 +24,7 @@ ADMIN_PASSWORD=$(kubectl -n "$NAMESPACE" get secret argocd-initial-admin-secret 
 if [ -z "$ADMIN_PASSWORD" ]; then
     echo "⚠️  WARNING: Could not extract password. Please hardcode it in the script."
     # Temporarily hardcode it here for the script to continue if you already changed it
-    ADMIN_PASSWORD="YOUR_ACTUAL_PASSWORD" 
+    ADMIN_PASSWORD="YOUR_ACTUAL_PASSWORD"
 fi
 
 echo "🔑 Step 4: Logging into ArgoCD CLI (Bypassing Tilt via native port-forward)..."
@@ -59,7 +59,7 @@ echo ""
 echo "=================================================="
 echo "✅ Setup Complete!"
 echo "=================================================="
-echo "🌐 K8s Hostname:    https://argo-cd-argocd-server.$NAMESPACE.svc.cluster.local"
+echo "🌐 K8s Hostname:    argo-cd-argocd-server.$NAMESPACE.svc.cluster.local"
 echo "👤 Admin Password:  $ADMIN_PASSWORD"
 echo "🪙  API Token:      $API_TOKEN"
 echo "=================================================="
