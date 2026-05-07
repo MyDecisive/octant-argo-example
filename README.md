@@ -1,4 +1,4 @@
-# 🚧 THIS REPO IS UNDER CONSTRUCTION. PLEASE COME BACK SOON 🚧
+# 🚧 WORK IN PROGRESS - COME BACK SOON 🚧
 
 # octant-argo-example
 
@@ -33,11 +33,55 @@ Create a Cluster
 kind create cluster --name octant-sandbox
 ```
 
+## Octant Installation Options
+
+1. [Tilt](#option-1-tilt)
+1. [Kubernetes API](#option-2-kubernetes-api)
+
+### Option 1. Tilt
+
 Apply tilt file via the following command
 
 ```bash
 tilt up
 ```
+
+### Option 2. Kubernetes API
+
+Install Argo CD via Helm:
+
+```bash
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+
+helm upgrade --install argo-cd argo/argo-cd \
+  --version 9.1.5 \
+  --namespace argocd \
+  --create-namespace
+```
+
+Wait for Argo CD server
+
+```bash
+kubectl -n argocd rollout status deployment argo-cd-argocd-server
+```
+
+```bash
+# Patch argocd-cm
+kubectl patch cm/argocd-cm \
+  --type=merge \
+  -n argocd \
+  --patch-file argocd/argocd-cm.yaml
+
+# Apply the Argo CD app-of-apps manifest:
+kubectl apply -f argocd/argocd.yaml
+
+# Port-forward equivalent of k8s_resource('argocd-server', port_forwards=1443):
+kubectl -n argocd port-forward svc/argo-cd-argocd-server 1443:443
+```
+
+
+## View Application Health with Argo CD UI
 
 Port-forward argo cd server with this command or k9s.
 
