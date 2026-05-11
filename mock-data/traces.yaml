@@ -1,189 +1,109 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: traces-generator
+  name: mdai-generate-traces
   namespace: synthetics
 spec:
-  schedule: "* * * * *"
+  schedule: "*/5 * * * *"
   concurrencyPolicy: Forbid
-  successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
+      backoffLimit: 1
       template:
         spec:
+          restartPolicy: Never
           containers:
-            - name: telemetrygen
-              image: public.ecr.aws/p3k6k6h3/telemetrygen:current
+            - name: mdai-generate-traces
+              image: golang:1.24
               imagePullPolicy: IfNotPresent
-              args:
-                - "traces"
-                - "--otlp-endpoint"
-                - "trace-balancer-collector.mdai.svc.cluster.local:4317"
-                - "--otlp-insecure"
-                - "true"
-                - "--child-spans"
-                - "10"
-                - "--service"
-                - "mdai-test-service-A"
-                - "--span-duration"
-                - "123ms"
-                - "--traces"
-                - "10"
-                - "--telemetry-attributes"
-                - 'operation="low-volume-op"'
-                - "--status-code"
-                - "Ok"
-          restartPolicy: OnFailure
----
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: service-b-low-volume
-  namespace: synthetics
-spec:
-  schedule: "* * * * *"
-  concurrencyPolicy: Forbid
-  successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 1
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-            - name: telemetrygen
-              image: public.ecr.aws/p3k6k6h3/telemetrygen:current
-              imagePullPolicy: IfNotPresent
-              args:
-                - "traces"
-                - "--otlp-endpoint"
-                - "trace-balancer-collector.mdai.svc.cluster.local:4317"
-                - "--otlp-insecure"
-                - "true"
-                - "--child-spans"
-                - "10"
-                - "--service"
-                - "mdai-test-service-B"
-                - "--span-duration"
-                - "123ms"
-                - "--traces"
-                - "10"
-                - "--telemetry-attributes"
-                - 'operation="low-volume-op"'
-                - "--status-code"
-                - "Ok"
-          restartPolicy: OnFailure
----
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: service-c-high-volume
-  namespace: synthetics
-spec:
-  schedule: "* * * * *"
-  concurrencyPolicy: Forbid
-  successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 1
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-            - name: telemetrygen
-              image: public.ecr.aws/p3k6k6h3/telemetrygen:current
-              imagePullPolicy: IfNotPresent
-              args:
-                - "traces"
-                - "--otlp-endpoint"
-                - "trace-balancer-collector.mdai.svc.cluster.local:4317"
-                - "--otlp-insecure"
-                - "true"
-                - "--child-spans"
-                - "3"
-                - "--service"
-                - "mdai-test-service-C"
-                - "--span-duration"
-                - "123ms"
-                - "--traces"
-                - "100"
-                - "--telemetry-attributes"
-                - 'operation="high-volume-op"'
-                - "--status-code"
-                - "Ok"
-          restartPolicy: OnFailure
----
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: service-d-high-volume
-  namespace: synthetics
-spec:
-  schedule: "* * * * *"
-  concurrencyPolicy: Forbid
-  successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 1
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-            - name: telemetrygen
-              image: public.ecr.aws/p3k6k6h3/telemetrygen:current
-              imagePullPolicy: IfNotPresent
-              args:
-                - "traces"
-                - "--otlp-endpoint"
-                - "trace-balancer-collector.mdai.svc.cluster.local:4317"
-                - "--otlp-insecure"
-                - "true"
-                - "--child-spans"
-                - "3"
-                - "--service"
-                - "mdai-test-service-D"
-                - "--span-duration"
-                - "123ms"
-                - "--traces"
-                - "500"
-                - "--telemetry-attributes"
-                - 'operation="high-volume-op"'
-                - "--status-code"
-                - "Ok"
-          restartPolicy: OnFailure
----
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: service-e-low-volume
-  namespace: synthetics
-spec:
-  schedule: "* * * * *"
-  concurrencyPolicy: Forbid
-  successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 1
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-            - name: telemetrygen
-              image: public.ecr.aws/p3k6k6h3/telemetrygen:current
-              imagePullPolicy: IfNotPresent
-              args:
-                - "traces"
-                - "--otlp-endpoint"
-                - "trace-balancer-collector.mdai.svc.cluster.local:4317"
-                - "--otlp-insecure"
-                - "true"
-                - "--child-spans"
-                - "10"
-                - "--service"
-                - "mdai-test-service-E"
-                - "--span-duration"
-                - "123ms"
-                - "--traces"
-                - "1"
-                - "--telemetry-attributes"
-                - 'operation="low-volume-op"'
-                - "--status-code"
-                - "Ok"
-          restartPolicy: OnFailure
+              env:
+                - name: HOST_IP
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: status.hostIP
+                - name: TRACE_COUNT
+                  value: "100"
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -euo pipefail
+
+                  export DD_AGENT_ADDR="${HOST_IP}:8126"
+
+                  echo "Using Datadog Agent at ${DD_AGENT_ADDR}"
+
+                  WORKDIR="$(mktemp -d)"
+                  trap 'rm -rf "$WORKDIR"' EXIT
+
+                  cd "$WORKDIR"
+
+                  cat > go.mod <<'EOF'
+                  module ddtrace-cronjob
+
+                  go 1.24
+
+                  require (
+                    github.com/DataDog/dd-trace-go/v2 v2.0.0
+                    github.com/brianvoe/gofakeit/v7 v7.0.4
+                  )
+                  EOF
+
+                  cat > main.go <<'EOF'
+                  package main
+
+                  import (
+                    "fmt"
+                    "os"
+                    "strconv"
+
+                    "github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
+                    "github.com/brianvoe/gofakeit/v7"
+                  )
+
+                  func main() {
+                    agentAddr := os.Getenv("DD_AGENT_ADDR")
+                    if agentAddr == "" {
+                      agentAddr = "localhost:8126"
+                    }
+
+                    traceCount := 100
+                    if v := os.Getenv("TRACE_COUNT"); v != "" {
+                      if parsed, err := strconv.Atoi(v); err == nil {
+                        traceCount = parsed
+                      }
+                    }
+
+                    fmt.Printf("Starting tracer with agent address: %s\n", agentAddr)
+                    fmt.Printf("Generating %d traces\n", traceCount)
+
+                    tracer.Start(
+                      tracer.WithAgentAddr(agentAddr),
+                      tracer.WithService("ddtrace-cronjob"),
+                      tracer.WithEnv("synthetics"),
+                    )
+                    defer tracer.Stop()
+
+                    for i := 0; i < traceCount; i++ {
+                      createTrace()
+                    }
+
+                    fmt.Println("Finished generating traces")
+                  }
+
+                  func createTrace() {
+                    span := tracer.StartSpan(gofakeit.Word())
+                    span.SetTag(gofakeit.Word(), gofakeit.Word())
+
+                    child := span.StartChild(gofakeit.Word())
+                    child.SetTag(gofakeit.Word(), gofakeit.Word())
+                    child.Finish()
+
+                    span.Finish()
+                  }
+                  EOF
+
+                  go mod tidy
+                  go run .

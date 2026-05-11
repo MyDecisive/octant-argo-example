@@ -4,7 +4,7 @@ datadog:
   site: us5.datadoghq.com
 
   # Your proxy/shim endpoints (unchanged)
-  dd_url: http://test-dd-collector.mdai.svc.cluster.local:8126
+  dd_url: http://mdai-envoy.mdai.svc.cluster.local:8126
 
   kubelet:
     tlsVerify: false
@@ -20,7 +20,7 @@ datadog:
 
   env:
     - name: DD_LOGS_CONFIG_LOGS_DD_URL
-      value: "http://test-dd-collector.mdai.svc.cluster.local:8126"
+      value: "http://mdai-envoy.mdai.svc.cluster.local:8126"
     # Send logs over HTTP when routing through a gateway / proxy / collector
     - name: DD_LOGS_CONFIG_USE_HTTP
       value: "true"
@@ -46,10 +46,10 @@ datadog:
       value: "kube_namespace:.*"
 
     - name: DD_APM_DD_URL
-      value: "http://test-dd-collector.mdai.svc.cluster.local:8126"
+      value: "http://mdai-envoy.mdai.svc.cluster.local:8126"
 
     - name: DD_KUBERNETES_EXCLUDE_NAMESPACE
-      value: "kube-system|<app_namespace>|datadog"
+      value: "kube-system|mdai|datadog"
 
   apm:
     # Enable this only if applications send traces to the agent over TCP:8126
