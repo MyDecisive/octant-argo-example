@@ -45,7 +45,7 @@ just --list
 Run the full bootstrap command:
 
 ```bash
-just bootstrap
+just octant-bootstrap
 ```
 
 This will:
