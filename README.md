@@ -135,10 +135,6 @@ These will be used in the connect flow.
 
 The following creates a secret in `your_namespace` (please replace with where the collector is installed, probably `mdai`)
 
-```
-kubectl -n your_namespace create secret generic datadog-secret --from-literal api-key=*****dd_api_key*****
-```
-
 ## Connect your Datadog agent
 
 You will need to create or use existing agent
