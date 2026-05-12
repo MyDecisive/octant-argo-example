@@ -10,7 +10,7 @@ spec:
   sources:
     - repoURL: ghcr.io/mydecisive/charts
       chart: octant
-      targetRevision: 0.1.29
+      targetRevision: 0.1.30
   destination:
     name: "in-cluster"
     namespace: octant
