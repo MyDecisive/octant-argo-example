@@ -179,3 +179,23 @@ kubectl delete -f mock-data/logs.yaml
 kubectl delete namespace synthetics
 ```
 
+
+
+## Make sure you update your sampling policy so data sends through
+
+Run the following curls to ensure you send data
+
+For log sampling
+
+```bash
+curl --location 'http://localhost:8081/variables/hub/test-dd/var/logs_ratio_number' \
+--header 'Content-Type: application/json' \
+--data '{"data": "50"}'
+```
+
+For trace sampling
+```bash
+curl --location 'http://localhost:8081/variables/hub/test-dd/var/traces_ratio_number' \
+--header 'Content-Type: application/json' \
+--data '{"data": "50"}'
+```
