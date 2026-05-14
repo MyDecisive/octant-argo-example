@@ -49,4 +49,4 @@ spec:
               # Emit exactly one log line to stdout.
               # Kubernetes writes this to the container log file.
               # The Datadog Agent tails that file from the node.
-              echo "{\"timestamp\":\"$ts\",\"level\":\"info\",\"service\":\"service9999\",\"team\":\"teamZ\",\"region\":\"us-east-1\",\"traffic_profile\":\"single\",\"event_id\":1,\"message\":\"Single synthetic log event from service9999 for Datadog Agent tailing validation.\"}"
+              echo "{\"timestamp\":\"$ts\",\"level\":\"INFO\",\"service\":\"service9999\",\"team\":\"teamZ\",\"region\":\"us-east-1\",\"traffic_profile\":\"single\",\"event_id\":1,\"message\":\"Single synthetic log event from service9999 for Datadog Agent tailing validation.\"}"
