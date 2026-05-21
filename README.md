@@ -177,21 +177,78 @@ kubectl delete namespace synthetics
 
 
 
-## Make sure you update your sampling policy so data sends through
+## Make sure you update your sampling policy so data sends through for validation and viewing clarity
 
-Run the following curls to ensure you send data
+**Run the following curls to ensure you send data**
 
 For log sampling
 
 ```bash
 curl --location 'http://localhost:8081/variables/hub/test-dd/var/logs_ratio_number' \
---header 'Content-Type: application/json' \
---data '{"data": "50"}'
+  --header 'Content-Type: application/json' \
+  --data '{"data": "100"}'
 ```
 
 For trace sampling
+
 ```bash
 curl --location 'http://localhost:8081/variables/hub/test-dd/var/traces_ratio_number' \
 --header 'Content-Type: application/json' \
---data '{"data": "50"}'
+--data '{"data": "100"}'
 ```
+
+For log error persistence
+
+```bash
+curl --location 'http://localhost:8081/variables/hub/test-dd/var/logs_persist_errors' \
+  --header 'Content-Type: application/json' \
+  --data '{"data": true }'
+```
+
+For traces error persistence
+
+```bash
+curl --location 'http://localhost:8081/variables/hub/test-dd/var/traces_persist_errors' \
+  --header 'Content-Type: application/json' \
+  --data '{"data": true }'
+```
+
+
+## View Prometheus for help/assistance with reviewing validation results
+
+Use this dashboard to see what items are failing you...
+
+[Metrics for Validation Dashboard](http://localhost:9090/graph?g0.expr=mdai_fidelity_attribute_checks_total&g0.tab=1&g0.display_mode=lines&g0.show_exemplars=0&g0.range_input=1h&g1.expr=mdai_fidelity_required_attribute_checks_total&g1.tab=1&g1.display_mode=lines&g1.show_exemplars=0&g1.range_input=1h&g2.expr=mdai_fidelity_signal_checks_total&g2.tab=1&g2.display_mode=lines&g2.show_exemplars=0&g2.range_input=1h&g3.expr=mdai_fidelity_required_signal_checks_total&g3.tab=1&g3.display_mode=lines&g3.show_exemplars=0&g3.range_input=1h&g4.expr=otelcol_receiver_accepted_log_records_total%7Bservice_name%3D%22test-dd-sampling-lb-collector%22%2C%20receiver%3D%22datadog%22%7D&g4.tab=1&g4.display_mode=lines&g4.show_exemplars=0&g4.range_input=1h&g5.expr=otelcol_exporter_sent_log_records_total%7Bservice_name%3D%22test-dd-log-sampling-collector%22%2Cexporter%3D%22datadog%22%7D&g5.tab=1&g5.display_mode=lines&g5.show_exemplars=0&g5.range_input=1h&g6.expr=otelcol_exporter_sent_spans_total%7Bservice_name%3D%22test-dd-trace-sampling-collector%22%2Cexporter%3D%22datadog%22%7D&g6.tab=1&g6.display_mode=lines&g6.show_exemplars=0&g6.range_input=1h)
+
+
+## Debugging the validator
+
+It is very common for our validator to fail upon checking for data integrity. This is multi-factor and can be attributed to both data flowing through our validator and comparing what is ingested by the validator service and what is exported from the validator service. Although the validation happens almost instantaneously, the I/O metrics take time to populate with certainty.
+
+We inspect all the fields inside of a payload to make sure what we are receiving is what we're exporting.
+
+Here are a few tips and tricks to see where failures are.
+
+#### Review validator service logs
+
+
+Find failing policies
+
+```bash
+kubectl logs -n mdai svc/test-dd-telemetry-validation-fidelity-validator --since=60s \
+  | grep '"policy_pass":false' \
+  | grep -o '"correlation_id":"[^"]*"' \
+  | cut -d'"' -f4 \
+  | sort -u
+```
+
+
+Port-forward the validator service to port 8080
+
+Hit a similar URL with the correlation_id replaces with the result of your grep
+
+[http://localhost:8080/results/<correlation_id>](http://localhost:8080/results/<correlation_id>)
+
+
+You should be able to see the result in more detail and pretty print for easy viewing.
+
