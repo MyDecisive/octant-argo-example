@@ -1,0 +1,6 @@
+apiVersion: v2
+name: io-simulators
+description: A Helm chart for deploying OTEL telemetry generation and receiving components
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

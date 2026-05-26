@@ -1,0 +1,27 @@
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: {{ .Release.Name }}-dd-io-to
+  namespace: {{ .Release.Namespace }}
+spec:
+  config:
+    receivers:
+      datadog:
+        endpoint: 0.0.0.0:8126
+        read_timeout: 60s
+    exporters:
+      debug: {}
+    service:
+      telemetry:
+          resource:
+            simulator: "{{ .Values.connection_name }}-to-collector"
+      pipelines:
+        traces:
+          receivers: [datadog]
+          exporters: [debug]
+        metrics:
+          receivers: [datadog]
+          exporters: [debug]
+        logs:
+          receivers: [datadog]
+          exporters: [debug]

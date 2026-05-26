@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-otelgen-from
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: otelgen-from
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otelgen-from
+  template:
+    metadata:
+      labels:
+        app: otelgen-from
+    spec:
+      containers:
+        # ---------------------------------------------------------
+        # METRICS
+        # ---------------------------------------------------------
+        - name: otelgen-metrics
+          image: ghcr.io/krzko/otelgen:latest
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          args:
+            # Global Flags
+            - "--insecure"
+            - "--otel-exporter-otlp-endpoint"
+            - "{{ .Release.Name }}-dd-io-from-collector.{{ .Release.Namespace }}.svc.cluster.local:4317"
+            - "--rate"
+            - "2"
+            # Command & Subcommand
+            - "metrics"
+            - "sum"
+
+        # ---------------------------------------------------------
+        # LOGS
+        # ---------------------------------------------------------
+        - name: otelgen-logs
+          image: ghcr.io/krzko/otelgen:latest
+          args:
+            - "--otel-exporter-otlp-endpoint={{ .Release.Name }}-dd-io-from-collector.{{ .Release.Namespace }}.svc.cluster.local:4317"
+            - "--insecure"
+            - "--rate"
+            - "2"
+            - "logs"
+            - "multi"

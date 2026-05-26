@@ -1,0 +1,59 @@
+
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: {{ .Release.Name }}-dd-io-from
+  namespace: {{ .Release.Namespace }}
+spec:
+  config:
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+    processors:
+      resource/add-metrics-host:
+        attributes:
+        - key: host
+          value: metrics-node-a
+          action: upsert
+        - key: datadog.host.name
+          value: metrics-node-a
+          action: upsert
+      attributes/add-metrics-host:
+        actions:
+          - key: host
+            value: metrics-node-a
+            action: upsert
+          - key: datadog.host.name
+            value: metrics-node-a
+            action: upsert
+    exporters:
+      debug: {}
+      datadog:
+        hostname: metrics-node-a
+        api:
+          key: "dummy-key"
+          fail_on_invalid_key: false
+        traces:
+          endpoint: "http://mdai-envoy.{{ .Release.Namespace }}.svc.cluster.local:8126"
+        metrics:
+          resource_attributes_as_tags: true
+          endpoint: "http://mdai-envoy.{{ .Release.Namespace }}.svc.cluster.local:8126"
+        logs:
+          endpoint: "http://mdai-envoy.{{ .Release.Namespace }}.svc.cluster.local:8126"
+    service:
+      telemetry:
+          resource:
+            simulator: "{{ .Values.connection_name }}-from-collector"
+      pipelines:
+        traces:
+          receivers: [otlp]
+          exporters: [datadog,debug]
+        metrics:
+          receivers: [otlp]
+          processors: [attributes/add-metrics-host, resource/add-metrics-host]
+          exporters: [datadog,debug]
+        logs:
+          receivers: [otlp]
+          exporters: [datadog,debug]

@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-otelgen-traces-cron
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: otelgen-traces-cron
+spec:
+  # Runs every minute. Format: Minute Hour Day Month Day-of-Week
+  schedule: "* * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: otelgen-traces-cron
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: otelgen-traces
+              image: ghcr.io/krzko/otelgen:latest
+              args:
+                - "--otel-exporter-otlp-endpoint={{ .Release.Name }}-dd-io-from-collector.{{ .Release.Namespace }}.svc.cluster.local:4317"
+                - "--insecure"
+                - "traces"
+                - "multi"
+                - "-w"
+                - "5"
+                - "-t"
+                - "3"
+                - "-s"
+                - "web_request"
