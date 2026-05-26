@@ -86,7 +86,7 @@ kubectl -n argocd port-forward svc/argo-cd-argocd-server 1443:443
 Port-forward argo cd server with this command or k9s.
 
 ```bash
-kubectl -n argocd port-forward svc/argocd-server 8080:443
+kubectl -n argocd port-forward svc/argo-cd-argocd-server 8080:443
 ```
 
 Open [Argo CD UI](http://localhost:8080)
@@ -110,7 +110,7 @@ You don't need to use Argo CD for the most part, but you can utilize their UI to
 Port forward to 8081
 
 ```
-kubectl -n octant port-forward svc/octant-ui 8081:8080
+kubectl -n octant port-forward svc/octant 8081:8080
 ```
 
 Open the app at [http://localhost:8081/](http://localhost:8081/), begin connecting your DD agent.
