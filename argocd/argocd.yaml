@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/MyDecisive/octant-argo-example.git
-    targetRevision: feat/octant-app
+    targetRevision: rlaw/octant-wip
     path: argocd/apps/
   destination:
     name: in-cluster
