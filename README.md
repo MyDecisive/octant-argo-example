@@ -235,7 +235,7 @@ Here are a few tips and tricks to see where failures are.
 Find failing policies
 
 ```bash
-kubectl logs -n mdai svc/test-dd-telemetry-validation-fidelity-validator --since=60s \
+kubectl logs -n mdai svc/test-dd-telemetry-validation-fidelity-validator --since=20s \
   | grep '"policy_pass":false' \
   | grep -o '"correlation_id":"[^"]*"' \
   | cut -d'"' -f4 \
