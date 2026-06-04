@@ -232,11 +232,11 @@ Here are a few tips and tricks to see where failures are.
 #### Review validator service logs
 
 
-Find failing policies
+View the comparison results where there is a failing policies for fidelity matching
 
 ```bash
 kubectl logs -n mdai svc/test-dd-telemetry-validation-fidelity-validator --since=20s \
-  | grep '"policy_pass":false' \
+  | grep -E '"comparison result"|"policy_pass":false' \
   | grep -o '"correlation_id":"[^"]*"' \
   | cut -d'"' -f4 \
   | sort -u
@@ -250,5 +250,5 @@ Hit a similar URL with the correlation_id replaces with the result of your grep
 [http://localhost:8080/results/<correlation_id>](http://localhost:8080/results/<correlation_id>)
 
 
-You should be able to see the result in more detail and pretty print for easy viewing.
+You should be able to see the result in more detail and pretty print for easy viewing to help debug
 
