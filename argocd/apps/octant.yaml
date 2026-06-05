@@ -11,6 +11,10 @@ spec:
     - repoURL: ghcr.io/mydecisive/charts
       chart: octant
       targetRevision: 0.1.65
+      helm:
+        valuesObject:
+          validator:
+            version: 0.1.5
   destination:
     name: "in-cluster"
     namespace: octant
