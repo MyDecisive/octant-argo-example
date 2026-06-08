@@ -53,9 +53,9 @@ This will:
 1. Create a Kind cluster named `octant-sandbox`.
 2. Add and update the Argo Helm repo.
 3. Install Argo CD chart version `9.1.5`.
-4. Wait for the Argo CD server deployment to become ready.
+4. Wait for the Argo CD server, repo-server, and application-controller to become ready.
 5. Patch the Argo CD config map from `argocd/argocd-cm.yaml`.
-6. Apply the app-of-apps manifest from `argocd/argocd.yaml`.
+6. Apply the `octant-bootstrap` app-of-apps manifest from `argocd/argocd.yaml`.
 
 ## Manual Step-by-Step Setup
 
@@ -156,6 +156,8 @@ Check whether the app has been created by Argo CD:
 ```bash
 just argocd-apps
 ```
+
+You should see both `octant-bootstrap` and the child `octant` Application while Argo CD is managing the install.
 
 Then check the Octant namespace:
 

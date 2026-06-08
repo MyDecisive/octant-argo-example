@@ -42,11 +42,15 @@ install-argocd: helm-repos
     helm upgrade --install {{argocd_release}} argo/argo-cd \
       --version {{argocd_chart_version}} \
       --namespace {{argocd_namespace}} \
-      --create-namespace
+      --create-namespace \
+      --wait \
+      --timeout 5m
 
-# Wait until Argo CD server is ready
+# Wait until Argo CD can serve, render, and reconcile applications
 wait-argocd:
-    kubectl -n {{argocd_namespace}} rollout status deployment {{argocd_release}}-argocd-server
+    kubectl -n {{argocd_namespace}} rollout status deployment/{{argocd_release}}-argocd-server --timeout=120s
+    kubectl -n {{argocd_namespace}} rollout status deployment/{{argocd_release}}-argocd-repo-server --timeout=120s
+    kubectl -n {{argocd_namespace}} rollout status statefulset/{{argocd_release}}-argocd-application-controller --timeout=120s
 
 # Patch the Argo CD config map from the repo
 patch-argocd-cm:

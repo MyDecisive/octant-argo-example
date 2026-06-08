@@ -57,13 +57,17 @@ helm repo update
 helm upgrade --install argo-cd argo/argo-cd \
   --version 9.1.5 \
   --namespace argocd \
-  --create-namespace
+  --create-namespace \
+  --wait \
+  --timeout 5m
 ```
 
-Wait for Argo CD server
+Wait until Argo CD can serve, render, and reconcile applications
 
 ```bash
-kubectl -n argocd rollout status deployment argo-cd-argocd-server
+kubectl -n argocd rollout status deployment/argo-cd-argocd-server --timeout=120s
+kubectl -n argocd rollout status deployment/argo-cd-argocd-repo-server --timeout=120s
+kubectl -n argocd rollout status statefulset/argo-cd-argocd-application-controller --timeout=120s
 ```
 
 ```bash
@@ -73,7 +77,7 @@ kubectl patch cm/argocd-cm \
   -n argocd \
   --patch-file argocd/argocd-cm.yaml
 
-# Apply the Argo CD app-of-apps manifest:
+# Apply the octant-bootstrap app-of-apps manifest (creates the child octant Application):
 kubectl apply -f argocd/argocd.yaml
 
 # Port-forward equivalent of k8s_resource('argocd-server', port_forwards=1443):
