@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: octant
+  name: octant-bootstrap
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/MyDecisive/octant-argo-example.git
-    targetRevision: HEAD
+    targetRevision: main
     path: argocd/apps/
   destination:
     name: in-cluster
