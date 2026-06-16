@@ -10,37 +10,29 @@ Install `just` if you do not already have it:
 brew install just
 ```
 
-Install the Argo CD CLI:
+Install all necessary dependencies:
 
 ```bash
 just prereqs
 ```
 
-You also need these tools available locally:
+This will install the following:
+- kind
+- kubectl
+- helm
+- argocd
 
-```bash
-brew install kind kubectl helm
-```
 
-## Repository and Branch
+## Repository
 
-Use this repo and branch:
+Clone this repository:
 
 ```bash
 git clone https://github.com/MyDecisive/octant-argo-example.git
 cd octant-argo-example
-git checkout feat/octant-app
 ```
 
-Copy the `Justfile` into the root of the repository if it is not already there.
-
-## See Available Commands
-
-```bash
-just --list
-```
-
-## Full Setup
+## Octant Bootstrap Setup
 
 Run the full bootstrap command:
 
@@ -57,6 +49,8 @@ This will:
 5. Patch the Argo CD config map from `argocd/argocd-cm.yaml`.
 6. Apply the `octant-bootstrap` app-of-apps manifest from `argocd/argocd.yaml`.
 
+The bootstrap manifest deploys the apps from the repository and branch configured in `argocd/argocd.yaml`.
+
 ## Manual Step-by-Step Setup
 
 If you prefer to run one step at a time:
@@ -67,20 +61,6 @@ just install-argocd
 just wait-argocd
 just patch-argocd-cm
 just deploy-octant
-```
-
-## Open the Argo CD UI
-
-In one terminal, run:
-
-```bash
-just port-forward-argocd
-```
-
-Then open:
-
-```text
-https://localhost:1443
 ```
 
 ## Open the Octant UI
@@ -117,7 +97,17 @@ Argo api token: <token from local setup script>
 
 Then click **Next**.
 
+## Next Steps
+
+You're ready to create a SmartHub and configure connections to manage your telemetry pipelines. For post-install validation, mock telemetry, and debugging help, follow [Testing and Troubleshooting](testing.md).
+
 ## Useful Commands
+
+See Available Commands:
+
+```bash
+just --list
+```
 
 Check Octant resources:
 

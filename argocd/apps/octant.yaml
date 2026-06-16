@@ -10,7 +10,7 @@ spec:
   sources:
     - repoURL: ghcr.io/mydecisive/charts
       chart: octant
-      targetRevision: 0.1.72
+      targetRevision: ">=0.1.72"
       helm:
         valuesObject:
           validator:

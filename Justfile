@@ -23,7 +23,7 @@ default:
 
 # Install local prerequisites
 prereqs:
-    brew install argocd
+    brew install kind kubectl helm argocd
 
 # Create the local Kind cluster
 create-cluster:
