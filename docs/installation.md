@@ -22,6 +22,7 @@ This will install the following:
 - helm
 - argocd
 
+See full list of [dependencies](https://github.com/MyDecisive/octant-argo-example/blob/main/README.md#prerequisites)
 
 ## Repository
 
