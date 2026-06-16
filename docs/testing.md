@@ -17,8 +17,7 @@ Then open:
 https://localhost:1443
 ```
 
->[!Info]
->Chrome will show a privacy warning because the local Argo CD port-forward uses a self-signed certificate. Choose **Advanced**, then **Proceed to localhost (unsafe)** to open the Argo CD UI.
+>**Note**: Chrome will show a privacy warning because the local Argo CD port-forward uses a self-signed certificate. Choose **Advanced**, then **Proceed to localhost (unsafe)** to open the Argo CD UI.
 
 ## Connect a Datadog Agent
 
@@ -39,26 +38,7 @@ If you already have a Datadog agent installed in the cluster, update the config 
 
 ## Using mock data
 
-If you don't have data from your services flowing in your cluster, we've got you covered. The mock-data manifests create synthetic logs and traces in the `synthetics` namespace. Apply these after the MDAI chart has created the collectors in the `mdai` namespace.
-
-```bash
-kubectl create namespace synthetics
-kubectl apply -f mock-data/
-```
-
-Verify the generators are running:
-
-```bash
-kubectl -n synthetics get deploy,cronjob,pod
-```
-
-Remove the mock-data generators when you're done using them.
-
-```bash
-kubectl delete -f mock-data/traces.yaml
-kubectl delete -f mock-data/logs.yaml
-kubectl delete namespace synthetics
-```
+If you don't have data from your services flowing in your cluster, we've got you covered. You can use our [Load Generation tool](https://github.com/MyDecisive/octant-demo-load/tree/main) to create a datadog collector, generate mock data, and forward it to your octant instance. [Install our Load Generation tool now](https://github.com/MyDecisive/octant-demo-load/blob/main/docs/INSTALL.md#install--run-macos-apple-silicon)!
 
 ## Live Validation Metrics
 
