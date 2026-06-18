@@ -8,9 +8,9 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: ghcr.io/mydecisive/charts
-      chart: octant
-      targetRevision: 0.1.64
+    - repoURL: https://github.com/MyDecisive/octant.git
+      targetRevision: rlaw/octant-install-log
+      path: ./deployment
   destination:
     name: "in-cluster"
     namespace: octant
