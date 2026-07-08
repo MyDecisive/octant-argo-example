@@ -38,17 +38,16 @@ cd octant-argo-example
 Run the full bootstrap command:
 
 ```bash
-just octant-bootstrap
+just bootstrap-octant
 ```
 
 This will:
 
 1. Create a Kind cluster named `octant-sandbox`.
-2. Add and update the Argo Helm repo.
-3. Install Argo CD chart version `9.1.5`.
-4. Wait for the Argo CD server, repo-server, and application-controller to become ready.
-5. Patch the Argo CD config map from `argocd/argocd-cm.yaml`.
-6. Apply the `octant-bootstrap` app-of-apps manifest from `argocd/argocd.yaml`.
+2. Install Argo CD chart version `9.1.5`.
+3. Wait for the Argo CD server, repo-server, and application-controller to become ready.
+4. Patch the Argo CD config map from `argocd/argocd-cm.yaml`.
+5. Apply the `bootstrap-octant` app-of-apps manifest from `argocd/argocd.yaml`.
 
 The bootstrap manifest deploys the apps from the repository and branch configured in `argocd/argocd.yaml`.
 
@@ -62,21 +61,18 @@ just install-argocd
 just wait-argocd
 just patch-argocd-cm
 just deploy-octant
+just patch-nodeports
 ```
 
 ## Open the Octant UI
 
-In another terminal, run:
-
-```bash
-just port-forward-octant
-```
-
-Then open:
+Open:
 
 ```text
 http://localhost:5678/
 ```
+
+The Kind cluster maps the Octant NodePort to `localhost:5678` during `just bootstrap-octant`, so no port-forward is needed.
 
 ## Connect Octant to Argo CD
 
@@ -92,7 +88,7 @@ Example values:
 
 ```text
 connection-name: test-dd
-argo cd cluster url: https://argocd-server.argocd.svc.cluster.local
+argo cd cluster url: https://argo-cd-argocd-server.argocd.svc.cluster.local
 Argo api token: <token from local setup script>
 ```
 
@@ -148,7 +144,7 @@ Check whether the app has been created by Argo CD:
 just argocd-apps
 ```
 
-You should see both `octant-bootstrap` and the child `octant` Application while Argo CD is managing the install.
+You should see both `bootstrap-octant` and the child `octant` Application while Argo CD is managing the install.
 
 Then check the Octant namespace:
 
@@ -158,9 +154,16 @@ just octant-status
 
 ### Port is already in use
 
-Change the port variables at the top of the `Justfile`:
+Change the `hostPort` values in `kind-config.yaml`, then update the matching host port variables at the top of the `Justfile`:
 
 ```just
 argocd_port := "1443"
 octant_port := "5678"
+```
+
+Recreate the Kind cluster after changing these values:
+
+```bash
+just cleanup
+just bootstrap-octant
 ```

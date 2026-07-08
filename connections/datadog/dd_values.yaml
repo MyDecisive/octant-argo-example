@@ -12,6 +12,7 @@ datadog:
   tags:
     - "cluster:octant-sandbox"
     - "env:mdai"
+    - "scenario:dev_dd_test"
 
   logs:
     enabled: true
@@ -33,7 +34,7 @@ datadog:
 
     # ---- Global tags (kept) ----
     - name: DD_TAGS
-      value: "cluster:mdai env:dev_dd_test"
+      value: "cluster:octant-sandbox env:mdai scenario:dev_dd_test"
 
     # ---- Only INCLUDE logs from the synthetics namespace ----
     # Use kube_namespace selector; space-separated patterns allowed.

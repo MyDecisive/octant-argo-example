@@ -11,14 +11,13 @@ This repo is a sandbox example for running Octant by MyDecisive with Argo CD App
 
 ## Install Flow
 
-The `Justfile` is the source of truth for local install commands. Verify docs against `just --list` and `just --dry-run octant-bootstrap` when changing install instructions.
+The `Justfile` is the source of truth for local install commands. Verify docs against `just --list` and `just --dry-run bootstrap-octant` when changing install instructions.
 
 Current local flow:
 
 ```bash
 just prereqs
-just octant-bootstrap
-just port-forward-octant
+just bootstrap-octant
 just local-setup
 ```
 
@@ -40,7 +39,7 @@ just wait-argocd
 - Argo CD local URL: `https://localhost:1443`
 - Octant local URL: `http://localhost:5678`
 
-The Argo CD UI uses a self-signed cert through the local port-forward. Chrome shows a privacy warning; users need to choose **Advanced** and then **Proceed to localhost (unsafe)**.
+The Argo CD UI uses a self-signed certificate. Chrome shows a privacy warning; users need to choose **Advanced** and then **Proceed to localhost (unsafe)**.
 
 `just local-setup` mutates Argo CD config/RBAC for the `apiUser` account and generates an API token. Do not commit generated tokens or passwords.
 
@@ -73,11 +72,9 @@ just octant-status
 Port-forward smoke checks that have been useful:
 
 ```bash
-just port-forward-octant
 curl -I http://localhost:5678
 ```
 
 ```bash
-just port-forward-argocd
 curl -k -I https://localhost:1443
 ```

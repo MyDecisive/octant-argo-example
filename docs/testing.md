@@ -5,19 +5,13 @@ Use these steps after the local Octant install is running and Octant is connecte
 
 ## Monitoring app health via Argo CD UI
 
-In one terminal, run:
-
-```bash
-just port-forward-argocd
-```
-
-Then open:
+Open:
 
 ```text
 https://localhost:1443
 ```
 
->**Note**: Chrome will show a privacy warning because the local Argo CD port-forward uses a self-signed certificate. Choose **Advanced**, then **Proceed to localhost (unsafe)** to open the Argo CD UI.
+>**Note**: Chrome will show a privacy warning because the local Argo CD server uses a self-signed certificate. Choose **Advanced**, then **Proceed to localhost (unsafe)** to open the Argo CD UI.
 
 ## Connect a Datadog Agent
 
@@ -26,10 +20,13 @@ You can create a new Datadog agent or use an existing one.
 ### New Datadog Agent
 
 ```bash
-helm repo add datadog https://helm.datadoghq.com
-helm repo update
-helm install datadog-agent -f connections/datadog/dd_values.yaml datadog/datadog --create-namespace -n datadog
+kubectl create namespace datadog --dry-run=client -o yaml | kubectl apply -f -
 kubectl -n datadog create secret generic datadog-secret --from-literal api-key=*****dd_api_key*****
+helm install datadog-agent datadog \
+  --repo https://helm.datadoghq.com \
+  -f connections/datadog/dd_values.yaml \
+  --create-namespace \
+  -n datadog
 ```
 
 ### Existing Datadog Agent
