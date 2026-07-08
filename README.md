@@ -24,13 +24,7 @@ Use it for sandbox testing only.
 Start Docker, then install and deploy the local sandbox:
 
 ```bash
-just octant-bootstrap
-```
-
-Port-forward the Octant service to access it in your browser:
-
-```bash
-just port-forward-octant
+just bootstrap-octant
 ```
 
 Access Octant at:

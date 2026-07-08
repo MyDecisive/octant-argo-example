@@ -1,0 +1,12 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: octant-sandbox
+nodes:
+  - role: control-plane
+    extraPortMappings:
+      - containerPort: 31443
+        hostPort: 1443
+        protocol: TCP
+      - containerPort: 30678
+        hostPort: 5678
+        protocol: TCP
