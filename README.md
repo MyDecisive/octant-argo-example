@@ -27,6 +27,15 @@ Start Docker, then install and deploy the local sandbox:
 just octant-bootstrap
 ```
 
+To use a different Kind cluster name, pass it to the bootstrap command:
+
+```bash
+just octant-bootstrap my-cluster
+```
+
+If the requested Kind cluster already exists, bootstrap reuses it after checking
+that its `kind-my-cluster` Kubernetes context is available.
+
 Port-forward the Octant service to access it in your browser:
 
 ```bash

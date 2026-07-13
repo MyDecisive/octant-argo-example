@@ -41,9 +41,22 @@ Run the full bootstrap command:
 just octant-bootstrap
 ```
 
+The cluster name defaults to `octant-sandbox`. To override it, pass the name to
+the command:
+
+```bash
+just octant-bootstrap my-cluster
+```
+
+If the requested Kind cluster already exists, the command skips cluster creation,
+checks that the corresponding `kind-<cluster-name>` Kubernetes context is
+available, and switches to that context before installing Argo CD. Bootstrap
+stops with an error if the context is missing, preventing resources from being
+installed into the wrong cluster.
+
 This will:
 
-1. Create a Kind cluster named `octant-sandbox`.
+1. Create or reuse a Kind cluster using the requested name (`octant-sandbox` by default), then select its Kubernetes context.
 2. Add and update the Argo Helm repo.
 3. Install Argo CD chart version `9.1.5`.
 4. Wait for the Argo CD server, repo-server, and application-controller to become ready.
@@ -128,6 +141,12 @@ Delete the local Kind cluster:
 
 ```bash
 just cleanup
+```
+
+If you used a custom cluster name, pass the same name when cleaning up:
+
+```bash
+just cleanup my-cluster
 ```
 
 ## Troubleshooting

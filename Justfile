@@ -26,11 +26,28 @@ prereqs:
     brew install kind kubectl helm argocd
 
 # Create the local Kind cluster
-create-cluster:
-    kind create cluster --name {{cluster}}
+create-cluster cluster_name=cluster:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cluster_name={{quote(cluster_name)}}
+    context_name="kind-${cluster_name}"
 
-delete-cluster:
-    kind delete cluster --name {{cluster}}
+    if kind get clusters | grep -Fqx -- "$cluster_name"; then
+      echo "Kind cluster '$cluster_name' already exists; skipping creation."
+    else
+      kind create cluster --name "$cluster_name"
+    fi
+
+    if ! kubectl config get-contexts -o name | grep -Fqx -- "$context_name"; then
+      echo "Kubernetes context '$context_name' is not available." >&2
+      echo "Restore its kubeconfig context or delete and recreate the Kind cluster." >&2
+      exit 1
+    fi
+
+    kubectl config use-context "$context_name"
+
+delete-cluster cluster_name=cluster:
+    kind delete cluster --name {{quote(cluster_name)}}
 
 # Add/update the Argo Helm repo
 helm-repos:
@@ -64,10 +81,10 @@ deploy-octant:
     kubectl apply -f argocd/argocd.yaml
 
 # Full cluster + Argo CD setup
-setup: create-cluster install-argocd wait-argocd patch-argocd-cm
+setup cluster_name=cluster: (create-cluster cluster_name) install-argocd wait-argocd patch-argocd-cm
 
 # Full bootstrap including Octant app deployment
-octant-bootstrap: setup deploy-octant
+octant-bootstrap cluster_name=cluster: (setup cluster_name) deploy-octant
 
 # Port-forward Argo CD UI to https://localhost:1443
 port-forward-argocd:
@@ -90,5 +107,5 @@ argocd-apps:
     kubectl -n {{argocd_namespace}} get applications
 
 # Delete the local Kind cluster
-cleanup:
-    kind delete cluster --name {{cluster}}
+cleanup cluster_name=cluster:
+    kind delete cluster --name {{quote(cluster_name)}}

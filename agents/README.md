@@ -32,7 +32,7 @@ just wait-argocd
 
 ## Argo CD and Octant Details
 
-- Kind cluster name: `octant-sandbox`
+- Default Kind cluster name: `octant-sandbox` (bootstrap accepts an optional custom name)
 - Argo CD namespace: `argocd`
 - Octant namespace: `octant`
 - Argo CD service: `argo-cd-argocd-server`
